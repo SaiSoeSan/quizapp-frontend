@@ -36,3 +36,8 @@ export interface RegisterResponse {
   token: string;
   user: User;
 }
+
+export interface UserData {
+  name: string;
+  role: string;
+}

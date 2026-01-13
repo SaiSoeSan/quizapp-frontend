@@ -18,7 +18,7 @@ export function proxy(request: NextRequest) {
   }
 
   // Redirect authenticated users away from public routes
-  if (token && user && isPublicRoute && pathName !== "/") {
+  if (token && user && isPublicRoute) {
     try {
       const userData = JSON.parse(user);
       const redirectUrl =

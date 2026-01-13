@@ -5,21 +5,27 @@ import {
   RegisterRequest,
   RegisterResponse,
   User,
+  UserData,
 } from "@/types/auth";
+
+const isBrowser = typeof window !== "undefined";
 
 // Set cookies
 const setCookies = (name: string, value: string, days: number = 7) => {
+  if (!isBrowser) return;
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${name}=${encodeURIComponent(
     value
-  )}; expires=${expires}; path=/; HttpOnly, secure, SameSite=strict`;
+  )}; expires=${expires}; path=/;`;
 };
 
 const deleteCookie = (name: string) => {
+  if (!isBrowser) return;
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
 };
 
 const getCookie = (name: string): string | null => {
+  if (!isBrowser) return null;
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) {
@@ -40,6 +46,7 @@ export const authService = {
   },
 
   logout: () => {
+    if (!isBrowser) return;
     deleteCookie("token");
     deleteCookie("user");
     window.location.href = "/login";
@@ -59,6 +66,18 @@ export const authService = {
       role: user.role,
     };
     setCookies("user", JSON.stringify(userData));
+  },
+
+  getUser: (): UserData | null => {
+    const user = getCookie("user");
+    if (user) {
+      try {
+        return JSON.parse(user);
+      } catch {
+        return null;
+      }
+    }
+    return null;
   },
 
   isAuthenticated: (): boolean => {

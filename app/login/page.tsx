@@ -18,9 +18,15 @@ export default function Login() {
     setError(null);
     try {
       const response = await authService.login({ email, password });
+
       authService.setToken(response.token);
       authService.setUser(response.user);
-      router.push("/dashboard");
+
+      if (response.user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/student/dashboard");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       setError("Login failed. Please check your credentials and try again.");

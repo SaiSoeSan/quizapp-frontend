@@ -10,7 +10,7 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line
     setUser(authService.getUser());
   }, []);
 

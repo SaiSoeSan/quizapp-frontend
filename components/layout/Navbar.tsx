@@ -1,26 +1,11 @@
 "use client";
 
-import { authService } from "@/services/authService";
-import { useState, useEffect } from "react";
-import { UserData } from "@/types/auth";
 import Link from "next/link";
+import Button from "../ui/Button";
+import { useAuthContext } from "@/context/AuthContext";
 
 const Navbar = () => {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true); // eslint-disable-line
-    setUser(authService.getUser());
-  }, []);
-
-  if (!mounted) {
-    return <nav className="bg-white shadow-md h-16" />;
-  }
-
-  const handleLogout = () => {
-    authService.logout();
-  };
+  const { user, logout } = useAuthContext();
 
   return (
     <nav className="bg-white shadow-md">
@@ -39,13 +24,9 @@ const Navbar = () => {
                       {user.name}
                     </span>
                   </div>
-
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors cursor-pointer"
-                  >
+                  <Button variant="secondary" onClick={logout}>
                     Logout
-                  </button>
+                  </Button>
                 </div>
               </>
             ) : (

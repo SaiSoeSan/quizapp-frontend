@@ -49,7 +49,6 @@ export const authService = {
     if (!isBrowser) return;
     deleteCookie("token");
     deleteCookie("user");
-    window.location.href = "/login";
   },
 
   getToken: (): string | null => {

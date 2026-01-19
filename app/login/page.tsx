@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { authService } from "@/services/authService";
 import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { setUser } = useAuthContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,13 +25,17 @@ export default function Login() {
       authService.setToken(response.token);
       authService.setUser(response.user);
 
+      setUser({
+        name: response.user.first_name + " " + response.user.last_name,
+        role: response.user.role,
+      });
+
       if (response.user.role === "admin") {
         router.push("/admin/dashboard");
       } else {
         router.push("/student/dashboard");
       }
     } catch (error) {
-      console.error("Login failed:", error);
       setError("Login failed. Please check your credentials and try again.");
     } finally {
       setLoading(false);
@@ -81,13 +88,9 @@ export default function Login() {
               required
             />
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors cursor-pointer"
-          >
+          <Button type="submit" variant="danger" className="w-full">
             {loading ? "Logging in..." : "Login"}
-          </button>
+          </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}

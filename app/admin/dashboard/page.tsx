@@ -17,7 +17,6 @@ import {
 } from "@/components/icons/DashboardIcons";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import ListCard from "@/components/dashboard/ListCard";
-import { subtle } from "crypto";
 
 // Static data - replace with API calls later
 const stats = {
@@ -89,19 +88,12 @@ const quickActions: QuickAction[] = [
 ];
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    setUser(authService.getUser()); // eslint-disable-line
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardHeader
           title="Admin Dashboard"
           description="Manage your quiz platform from here."
-          userName={user ? user.name : undefined}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

@@ -6,52 +6,8 @@ import SearchBar from "@/components/question-sets/SearchBar";
 import QuestionSetTable from "@/components/question-sets/QuestionSetTable";
 import { QuestionSet } from "@/types/questionSets";
 import { questionSetService } from "@/services/questionSetService";
-
-// Static data - replace with API call later
-// const initialQuestionSets: QuestionSet[] = [
-//   {
-//     id: 1,
-//     title: "JavaScript Basics",
-//     description: "Fundamental JavaScript concepts for beginners",
-//     questionsCount: 25,
-//     status: "active",
-//   },
-//   {
-//     id: 2,
-//     title: "React Fundamentals",
-//     description: "Core React concepts including hooks and state management",
-//     questionsCount: 30,
-//     status: "active",
-//   },
-//   {
-//     id: 3,
-//     title: "Node.js Quiz",
-//     description: "Server-side JavaScript with Node.js",
-//     questionsCount: 20,
-//     status: "draft",
-//   },
-//   {
-//     id: 4,
-//     title: "TypeScript Advanced",
-//     description: "Advanced TypeScript features and patterns",
-//     questionsCount: 15,
-//     status: "active",
-//   },
-//   {
-//     id: 5,
-//     title: "CSS Mastery",
-//     description: "Advanced CSS techniques and layouts",
-//     questionsCount: 22,
-//     status: "active",
-//   },
-//   {
-//     id: 6,
-//     title: "Database Design",
-//     description: "SQL and NoSQL database concepts",
-//     questionsCount: 18,
-//     status: "draft",
-//   },
-// ];
+import LoadingSpinner from "@/components/ui/Loading";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export default function QuestionSetsPage() {
   const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
@@ -111,14 +67,11 @@ export default function QuestionSetsPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Question Sets</h1>
-            <p className="text-gray-600 mt-1">
-              Manage your question sets and their questions.
-            </p>
-          </div>
+        <DashboardHeader
+          title="Question Sets"
+          description="Manage your question sets and their questions."
+          backLink={{ text: "Back to Dashboard", href: "/admin/dashboard" }}
+        >
           <Button as="link" href="/admin/question-sets/create" variant="danger">
             <svg
               className="w-5 h-5 mr-2"
@@ -135,7 +88,7 @@ export default function QuestionSetsPage() {
             </svg>
             Add Question Set
           </Button>
-        </div>
+        </DashboardHeader>
 
         {/* Filters */}
         <SearchBar
@@ -145,10 +98,23 @@ export default function QuestionSetsPage() {
           onStatusFilterChange={setStatusFilter}
         />
 
-        <QuestionSetTable
-          questionSets={filteredQuestionSets}
-          onDelete={deleteHandler}
-        />
+        {loading && <LoadingSpinner title="Loading question sets..." />}
+
+        {error && !loading && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button variant="danger" onClick={fetchQuestionSets}>
+              Try Again
+            </Button>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <QuestionSetTable
+            questionSets={filteredQuestionSets}
+            onDelete={deleteHandler}
+          />
+        )}
       </div>
     </div>
   );

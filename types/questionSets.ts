@@ -18,13 +18,13 @@ export interface GetAllQuestionSetsResponse {
 export interface CreateQuestionSetRequest {
   title: string;
   description?: string;
-  youtube_link?: string | null | undefined;
+  youtubeLink?: string | null | undefined;
   status?: "active" | "draft";
 }
 
 export interface UpdateQuestionSetRequest {
   title?: string;
   description?: string;
-  youtube_link?: string | null | undefined;
+  youtubeLink?: string | null | undefined;
   status?: "active" | "draft";
 }

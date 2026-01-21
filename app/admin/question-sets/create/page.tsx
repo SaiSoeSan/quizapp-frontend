@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { questionSetService } from "@/services/questionSetService";
 
 export default function CreateQuestionSetPage() {
   const router = useRouter();
@@ -10,13 +13,19 @@ export default function CreateQuestionSetPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
+    youtubeLink: "",
     status: "draft" as "active" | "draft",
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | HTMLSelectElement
+      | HTMLInputElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -28,12 +37,7 @@ export default function CreateQuestionSetPage() {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
-      console.log("Creating question set:", formData);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await questionSetService.create(formData);
       // Redirect to question sets list
       router.push("/admin/question-sets");
     } catch (err) {
@@ -47,34 +51,14 @@ export default function CreateQuestionSetPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/admin/question-sets"
-            className="inline-flex items-center text-gray-600 hover:text-gray-800 mb-4"
-          >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to Question Sets
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Create Question Set
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Create a new question set to organize your questions.
-          </p>
-        </div>
+        <DashboardHeader
+          title="Create Question Set"
+          description="Create a new question set to organize your questions."
+          backLink={{
+            text: "Back to Question Sets",
+            href: "/admin/question-sets",
+          }}
+        />
 
         {/* Form */}
         <div className="bg-white rounded-xl shadow-md p-6">
@@ -85,19 +69,19 @@ export default function CreateQuestionSetPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name */}
+            {/* Title */}
             <div>
               <label
-                htmlFor="name"
+                htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Name <span className="text-red-500">*</span>
+                Title <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="title"
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g., JavaScript Basics"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
@@ -121,6 +105,24 @@ export default function CreateQuestionSetPage() {
                 placeholder="Describe what this question set covers..."
                 rows={4}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700 resize-none"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="youtubeLink"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Youtube Link
+              </label>
+              <input
+                type="text"
+                id="youtubeLink"
+                name="youtubeLink"
+                value={formData.youtubeLink}
+                onChange={handleChange}
+                placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
               />
             </div>
 
@@ -155,31 +157,22 @@ export default function CreateQuestionSetPage() {
               >
                 Cancel
               </Link>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-red-400 cursor-pointer"
-              >
+              <Button type="submit" disabled={loading} variant="danger">
                 {loading ? "Creating..." : "Create Question Set"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
 
         {/* Tips */}
         <div className="mt-6 bg-blue-50 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">
-            💡 Tips
-          </h3>
+          <h3 className="text-lg font-semibold text-blue-800 mb-2">💡 Tips</h3>
           <ul className="text-sm text-blue-700 space-y-2">
+            <li>• Choose a clear, descriptive name for your question set.</li>
+            <li>• You can add questions after creating the question set.</li>
             <li>
-              • Choose a clear, descriptive name for your question set.
-            </li>
-            <li>
-              • You can add questions after creating the question set.
-            </li>
-            <li>
-              • Set status to &quot;Draft&quot; while you&apos;re still adding questions.
+              • Set status to &quot;Draft&quot; while you&apos;re still adding
+              questions.
             </li>
             <li>
               • Change status to &quot;Active&quot; when ready for students.

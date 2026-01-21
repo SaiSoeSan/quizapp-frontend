@@ -8,6 +8,7 @@ import { QuestionSet } from "@/types/questionSets";
 import { questionSetService } from "@/services/questionSetService";
 import LoadingSpinner from "@/components/ui/Loading";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Swal from "sweetalert2";
 
 export default function QuestionSetsPage() {
   const [questionSets, setQuestionSets] = useState<QuestionSet[]>([]);
@@ -58,10 +59,17 @@ export default function QuestionSetsPage() {
   };
 
   const deleteHandler = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this question set?")) {
-      return;
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      await deleteQuestionSet(id);
     }
-    await deleteQuestionSet(id);
   };
 
   return (

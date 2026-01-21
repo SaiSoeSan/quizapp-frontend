@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FormData } from "@/types/questionSets";
+import { questionSetService } from "@/services/questionSetService";
+import LoadingSpinner from "@/components/ui/Loading";
 import Button from "@/components/ui/Button";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import { questionSetService } from "@/services/questionSetService";
-import { FormData } from "@/types/questionSets";
 
-export default function CreateQuestionSetPage() {
+const EditQuestionSetPage = () => {
+  const params = useParams();
   const router = useRouter();
+  const slug = params.slug as string;
+
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
@@ -19,6 +23,28 @@ export default function CreateQuestionSetPage() {
     youtubeLink: "",
     status: "draft",
   });
+
+  useEffect(() => {
+    const fetchQuestionSet = async () => {
+      try {
+        setLoading(true);
+        const response = await questionSetService.getById(Number(slug));
+        setFormData({
+          title: response.questionSet.title,
+          description: response.questionSet.description || "",
+          youtubeLink: response.questionSet.youtube_link || "",
+          status: response.questionSet.status,
+        });
+      } catch (error) {
+        console.error("Error fetching question set:", error);
+        setError("Failed to load question set.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestionSet();
+  }, [slug]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -31,27 +57,30 @@ export default function CreateQuestionSetPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError(null);
 
     try {
-      await questionSetService.create(formData);
-      // Redirect to question sets list
+      await questionSetService.update(Number(slug), formData);
       router.push("/admin/question-sets");
-    } catch (err) {
-      console.error("Error creating question set:", err);
-      setError("Failed to create question set. Please try again.");
+    } catch (error) {
+      console.error("Error updating question set:", error);
+      setError("Failed to update question set. Please try again.");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner title="Loading question set..." />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardHeader
-          title="Create Question Set"
-          description="Create a new question set to organize your questions."
+          title="Edit Question Set"
+          description="Update the question set details."
           backLink={{
             text: "Back to Question Sets",
             href: "/admin/question-sets",
@@ -106,24 +135,6 @@ export default function CreateQuestionSetPage() {
               />
             </div>
 
-            <div>
-              <label
-                htmlFor="youtubeLink"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Youtube Link
-              </label>
-              <input
-                type="text"
-                id="youtubeLink"
-                name="youtubeLink"
-                value={formData.youtubeLink}
-                onChange={handleChange}
-                placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
-              />
-            </div>
-
             {/* Status */}
             <div>
               <label
@@ -142,42 +153,26 @@ export default function CreateQuestionSetPage() {
                 <option value="draft">Draft</option>
                 <option value="active">Active</option>
               </select>
-              <p className="mt-1 text-sm text-gray-500">
-                Draft question sets are not visible to students.
-              </p>
             </div>
 
             {/* Buttons */}
             <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-200">
-              <Link
-                href="/admin/question-sets"
-                className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => router.push("/admin/question-sets")}
               >
                 Cancel
-              </Link>
-              <Button type="submit" disabled={loading} variant="danger">
-                {loading ? "Creating..." : "Create Question Set"}
+              </Button>
+              <Button type="submit" variant="danger" loading={saving}>
+                {saving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
         </div>
-
-        {/* Tips */}
-        <div className="mt-6 bg-blue-50 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">💡 Tips</h3>
-          <ul className="text-sm text-blue-700 space-y-2">
-            <li>• Choose a clear, descriptive name for your question set.</li>
-            <li>• You can add questions after creating the question set.</li>
-            <li>
-              • Set status to &quot;Draft&quot; while you&apos;re still adding
-              questions.
-            </li>
-            <li>
-              • Change status to &quot;Active&quot; when ready for students.
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   );
-}
+};
+
+export default EditQuestionSetPage;

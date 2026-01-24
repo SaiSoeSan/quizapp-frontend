@@ -1,3 +1,5 @@
+import { Question } from "@/types/question";
+
 export interface FormData {
   title: string;
   description: string;
@@ -14,7 +16,8 @@ export interface QuestionSet {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null | undefined;
-  questionCount: number;
+  questionCount?: number;
+  questions?: Question[];
 }
 
 export interface GetAllQuestionSetsResponse {

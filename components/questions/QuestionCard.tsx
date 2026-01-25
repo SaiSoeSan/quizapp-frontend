@@ -8,6 +8,7 @@ interface QuestionCardProps {
   questionSetSlug: string;
   isEditable: boolean;
   onDelete?: (questionId: number) => void;
+  onEdit?: (question: Question) => void;
 }
 
 const QuestionCard = ({
@@ -16,6 +17,7 @@ const QuestionCard = ({
   questionSetSlug,
   isEditable,
   onDelete,
+  onEdit,
 }: QuestionCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
@@ -41,9 +43,9 @@ const QuestionCard = ({
 
         {isEditable && (
           <div className="flex gap-2">
-            <Link
-              href={`/admin/question-sets/${questionSetSlug}/questions/${question.id}/edit`}
-              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            <button
+              onClick={() => onEdit?.(question)}
+              className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
               title="Edit"
             >
               <svg
@@ -59,7 +61,7 @@ const QuestionCard = ({
                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                 />
               </svg>
-            </Link>
+            </button>
             <button
               onClick={() => onDelete?.(question.id)}
               className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"

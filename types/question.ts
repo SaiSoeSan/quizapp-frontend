@@ -10,6 +10,18 @@ export interface Question {
   options?: QuestionOption[];
 }
 
+export interface QuestionRequestFormData {
+  question_text: string;
+  question_type: "multiple_choice" | "true_false";
+  options: OptionRequest[];
+}
+
+export interface OptionRequest {
+  id?: number;
+  option_text: string;
+  is_correct: boolean;
+}
+
 export interface QuestionOption {
   id: number;
   question_id: number;

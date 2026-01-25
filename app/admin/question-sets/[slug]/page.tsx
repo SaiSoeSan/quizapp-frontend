@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
@@ -9,6 +9,10 @@ import { questionSetService } from "@/services/questionSetService";
 import { QuestionSet } from "@/types/questionSets";
 import { Question } from "@/types/question";
 import QuestionCard from "@/components/questions/QuestionCard";
+import { questionService } from "@/services/questionService";
+import { QuestionRequestFormData } from "@/types/question";
+import Swal from "sweetalert2";
+import QuestionModal from "@/components/questions/QuestionModal";
 
 const QuestionSetViewPage = () => {
   const params = useParams();
@@ -19,20 +23,70 @@ const QuestionSetViewPage = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await questionSetService.getById(Number(slug));
-      const questionSet = response.questionSet;
-      const questions = response.questionSet.questions || [];
-      setQuestionSet(questionSet);
-      setQuestions(questions);
-      setTotalQuestions(questions.length);
-      setLoading(false);
-    };
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
 
-    fetchData();
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+
+    const response = await questionSetService.getById(Number(slug));
+    const questionSet = response.questionSet;
+    const questions = questionSet.questions || [];
+
+    setQuestionSet(questionSet);
+    setQuestions(questions);
+    setTotalQuestions(questions.length);
+
+    setLoading(false);
   }, [slug]);
+
+  useEffect(() => {
+    fetchData(); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData]);
+
+  // Open modal for creating new question
+  const handleAddQuestion = () => {
+    setEditingQuestion(null);
+    setIsModalOpen(true);
+  };
+
+  // Open modal for editing existing question
+  const handleEditQuestion = (question: Question) => {
+    setEditingQuestion(question);
+    setIsModalOpen(true);
+  };
+
+  // Save question (create or update)
+  const handleSaveQuestion = async (formData: QuestionRequestFormData) => {
+    if (editingQuestion) {
+      // Update existing question
+      await questionService.update(Number(slug), editingQuestion.id, formData);
+    } else {
+      // Create new question
+      await questionService.create(Number(slug), formData);
+    }
+    // Refresh data after save
+    await fetchData();
+  };
+
+  // Delete question
+  const handleDeleteQuestion = async (questionId: number) => {
+    const result = await Swal.fire({
+      title: "Delete Question?",
+      text: "This action cannot be undone!",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      await questionService.delete(Number(slug), questionId);
+      await fetchData();
+      Swal.fire("Deleted!", "Question has been deleted.", "success");
+    }
+  };
 
   if (loading) {
     return <LoadingSpinner title="Loading question set..." />;
@@ -58,11 +112,7 @@ const QuestionSetViewPage = () => {
         >
           {questionSet.status === "draft" ? (
             <div className="flex gap-2">
-              <Button
-                as="link"
-                href={`/admin/question-sets/${slug}/questions/create`}
-                variant="danger"
-              >
+              <Button onClick={handleAddQuestion} variant="danger">
                 <svg
                   className="w-5 h-5 mr-2"
                   fill="none"
@@ -182,11 +232,21 @@ const QuestionSetViewPage = () => {
                 index={index}
                 questionSetSlug={slug}
                 isEditable={questionSet.status === "draft"}
+                onDelete={handleDeleteQuestion}
+                onEdit={handleEditQuestion}
               />
             ))
           )}
         </div>
       </div>
+      {/* Question Modal */}
+      <QuestionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveQuestion}
+        question={editingQuestion}
+        questionSetId={Number(slug)}
+      />
     </div>
   );
 };

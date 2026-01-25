@@ -60,8 +60,8 @@ export default function QuestionSetsPage() {
 
   const deleteHandler = async (id: number) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Delete Question Set?",
+      text: "This action cannot be undone!",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#6b7280",

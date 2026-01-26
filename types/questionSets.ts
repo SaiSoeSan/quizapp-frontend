@@ -11,7 +11,7 @@ export interface QuestionSet {
   id: number;
   title: string;
   description: string;
-  youtube_link?: string | null | undefined;
+  youtubeLink?: string | null | undefined;
   status: "active" | "draft";
   createdAt: string;
   updatedAt: string;

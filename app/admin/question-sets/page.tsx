@@ -69,6 +69,7 @@ export default function QuestionSetsPage() {
     });
     if (result.isConfirmed) {
       await deleteQuestionSet(id);
+      Swal.fire("Deleted!", "Question set has been deleted.", "success");
     }
   };
 

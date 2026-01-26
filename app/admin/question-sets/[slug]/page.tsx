@@ -182,11 +182,11 @@ const QuestionSetViewPage = () => {
           </div>
 
           {/* YouTube Link */}
-          {questionSet.youtube_link && (
+          {questionSet.youtubeLink && (
             <div className="mt-4">
               <p className="text-sm text-gray-500 mb-1">YouTube Link</p>
               <a
-                href={questionSet.youtube_link}
+                href={questionSet.youtubeLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-blue-600 hover:underline text-sm"
@@ -198,7 +198,7 @@ const QuestionSetViewPage = () => {
                 >
                   <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                 </svg>
-                {questionSet.youtube_link}
+                {questionSet.youtubeLink}
               </a>
             </div>
           )}
@@ -216,13 +216,6 @@ const QuestionSetViewPage = () => {
           {totalQuestions === 0 ? (
             <div className="bg-white rounded-xl shadow-md p-8 text-center">
               <p className="text-gray-500 mb-4">No questions yet.</p>
-              <Button
-                as="link"
-                href={`/admin/question-sets/${slug}/questions/create`}
-                variant="danger"
-              >
-                Add First Question
-              </Button>
             </div>
           ) : (
             questions.map((question, index) => (

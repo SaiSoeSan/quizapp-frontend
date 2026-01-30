@@ -73,18 +73,6 @@ const quickActions: QuickAction[] = [
     icon: <PlusIcon />,
     color: "green",
   },
-  {
-    href: "/admin/questions/create",
-    label: "Add New Question",
-    icon: <PlusIcon />,
-    color: "purple",
-  },
-  {
-    href: "/admin/quizzes/create",
-    label: "Create New Quiz",
-    icon: <PlusIcon />,
-    color: "orange",
-  },
 ];
 
 export default function AdminDashboard() {
@@ -96,7 +84,7 @@ export default function AdminDashboard() {
           description="Manage your quiz platform from here."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatsCard
             title="Total Users"
             value={stats.users}
@@ -114,18 +102,10 @@ export default function AdminDashboard() {
             color="green"
           />
           <StatsCard
-            title="Total Questions"
-            value={stats.questions}
-            icon={<QuestionsIcon />}
-            href="/admin/questions"
-            linkText="View all questions →"
-            color="purple"
-          />
-          <StatsCard
             title="Active Quizzes"
             value={stats.activeQuizzes}
             icon={<QuizzesIcon />}
-            href="/admin/quizzes"
+            href=""
             linkText="View all quizzes →"
             color="orange"
           />
@@ -136,45 +116,6 @@ export default function AdminDashboard() {
           {/* Quick Actions */}
           <QuickActionCard title="Quick Actions" actions={quickActions} />
 
-          {/* Recent Users */}
-          {/* <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Recent Users
-            </h2>
-            <div className="space-y-4">
-              {recentUsers.map((user, index) => (
-                <div key={index} className="flex items-center">
-                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-gray-600 font-medium">
-                      {user.name.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-800">
-                      {user.name}
-                    </p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
-                  </div>
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full ${
-                      user.role === "teacher"
-                        ? "bg-blue-100 text-blue-600"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {user.role}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <Link
-              href="/admin/users"
-              className="block mt-4 text-center text-sm text-red-600 hover:underline"
-            >
-              View all users
-            </Link>
-          </div> */}
-
           <ListCard
             title="Recent Users"
             items={recentUsers}
@@ -183,6 +124,7 @@ export default function AdminDashboard() {
             showAvatar={true}
             showBadge={true}
           />
+
           <ListCard
             title="Recent Question Sets"
             items={recentQuestionSets}

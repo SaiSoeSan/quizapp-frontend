@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { studentService } from "@/services/studentService";
 import { QuizResult } from "@/types/student";
+import LoadingSpinner from "@/components/ui/Loading";
 
 export default function ResultPage() {
   const params = useParams();
@@ -43,13 +44,7 @@ export default function ResultPage() {
   }, [attemptId]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-gray-500">Loading result...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner title="Loading your practice result..." />;
   }
 
   if (error || !result) {
@@ -179,7 +174,9 @@ export default function ResultPage() {
             >
               {showAnswers ? "Hide Answers" : "Show Answers"}
             </Button>
-            <Link href={`/student/question-sets}`}>
+            <Link
+              href={`/student/question-sets/${result.questionSet.id}/practice`}
+            >
               <Button variant="danger">Try Again</Button>
             </Link>
             <Link href="/student/question-sets">

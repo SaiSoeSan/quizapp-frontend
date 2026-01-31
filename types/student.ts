@@ -42,6 +42,10 @@ export interface QuizResult {
   percentage: number;
   passed: boolean;
   answers: QuizAnswerResult[];
+  questionSet: {
+    id: number;
+    title: string;
+  };
 }
 
 export interface QuizAnswerResult {
@@ -77,5 +81,3 @@ export interface StudentDashboardResponse {
   stats: StudentStats;
   questionSets: QuestionSetWithProgress[];
 }
-
-

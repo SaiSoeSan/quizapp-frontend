@@ -64,9 +64,11 @@ export default function QuestionSetViewPage() {
     ? getYouTubeVideoId(questionSet.youtubeLink)
     : null;
 
-  const isCompleted = questionSet.progress.status === "completed";
-  const isInProgress = questionSet.progress.status === "in_progress";
-  const isLocked = questionSet.progress.status === "locked";
+  const { progress } = questionSet;
+
+  const isCompleted = progress.status === "completed";
+  const isInProgress = progress.status === "in_progress";
+  const isLocked = progress.status === "locked";
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -133,12 +135,12 @@ export default function QuestionSetViewPage() {
                   You&apos;ve completed this week!
                 </p>
                 <p className="text-sm text-green-600">
-                  Your score: {questionSet.progress.score}%
+                  Your score: {progress.score}%
                 </p>
               </div>
             </div>
             <Link
-              href={`/student/question-sets/${id}/result`}
+              href={`/student/question-sets/${progress.attemptId}/result`}
               className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
             >
               View Result
@@ -279,7 +281,9 @@ export default function QuestionSetViewPage() {
             )}
 
             {isCompleted && (
-              <Link href={`/student/question-sets/${id}/result`}>
+              <Link
+                href={`/student/question-sets/${progress.attemptId}/result`}
+              >
                 <Button variant="secondary" size="lg">
                   View Last Result
                 </Button>

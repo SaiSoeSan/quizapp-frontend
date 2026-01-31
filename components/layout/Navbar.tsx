@@ -15,6 +15,24 @@ const Navbar = () => {
             QuizApp
           </Link>
 
+          {/* Dashboard Menu */}
+          {user && (
+            <div className="flex items-start space-x-4">
+              <Link
+                href="/student/dashboard"
+                className="text-gray-600 hover:text-red-600 transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                href="/student/question-sets"
+                className="text-gray-600 hover:text-red-600 transition-colors"
+              >
+                Weekly Lessons
+              </Link>
+            </div>
+          )}
+
           <div className="flex items-center space-x-4">
             {user ? (
               <>

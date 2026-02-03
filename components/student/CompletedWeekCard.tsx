@@ -42,7 +42,7 @@ export default function CompletedWeekCard({
 
       <div className="flex gap-2">
         <Link
-          href={`/student/question-sets/${questionSet.progress.attemptId}/result`}
+          href={`/student/question-sets/${questionSet.id}/result?attemptId=${questionSet.progress.attemptId}`}
           className="px-3 py-1.5 bg-white text-gray-700 rounded-lg text-sm hover:bg-gray-100 border border-gray-200"
         >
           View Result
@@ -57,5 +57,3 @@ export default function CompletedWeekCard({
     </div>
   );
 }
-
-

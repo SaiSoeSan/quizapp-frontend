@@ -140,7 +140,7 @@ export default function QuestionSetViewPage() {
               </div>
             </div>
             <Link
-              href={`/student/question-sets/${progress.attemptId}/result`}
+              href={`/student/question-sets/${slug}/result?attemptId=${progress.attemptId}`}
               className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
             >
               View Result
@@ -282,7 +282,7 @@ export default function QuestionSetViewPage() {
 
             {isCompleted && (
               <Link
-                href={`/student/question-sets/${progress.attemptId}/result`}
+                href={`/student/question-sets/${slug}/result?attemptId=${progress.attemptId}`}
               >
                 <Button variant="secondary" size="lg">
                   View Last Result

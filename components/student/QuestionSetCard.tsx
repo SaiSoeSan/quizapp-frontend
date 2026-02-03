@@ -156,7 +156,7 @@ const QuestionSetCard = ({
               ) : isCompleted ? (
                 <div className="flex gap-2">
                   <Link
-                    href={`/student/question-sets/${progress.attemptId}/result`}
+                    href={`/student/question-sets/${questionSet.id}/result?attemptId=${progress.attemptId}`}
                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"
                   >
                     View Result

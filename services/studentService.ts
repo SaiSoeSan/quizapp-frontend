@@ -11,7 +11,9 @@ import {
 export const studentService = {
   // Get full dashboard data (stats + question sets)
   getDashboard: async (): Promise<StudentDashboardResponse> => {
-    const response = await api.get<{ data: StudentDashboardResponse }>("/student/dashboard");
+    const response = await api.get<{ data: StudentDashboardResponse }>(
+      "/student/dashboard",
+    );
     return response.data.data;
   },
 
@@ -23,9 +25,9 @@ export const studentService = {
 
   // Get all question sets with progress
   getQuestionSets: async (): Promise<QuestionSetWithProgress[]> => {
-    const response = await api.get<{ data: { questionSets: QuestionSetWithProgress[] } }>(
-      "/student/question-sets",
-    );
+    const response = await api.get<{
+      data: { questionSets: QuestionSetWithProgress[] };
+    }>("/student/question-sets");
     return response.data.data.questionSets;
   },
 
@@ -38,7 +40,9 @@ export const studentService = {
   },
 
   // Get or create attempt for practice (returns questions)
-  getOrCreateAttempt: async (questionSetId: number): Promise<{
+  getOrCreateAttempt: async (
+    questionSetId: number,
+  ): Promise<{
     attempt: QuizAttempt;
     questionSet: { id: number; title: string };
     questions: Array<{
@@ -106,8 +110,8 @@ export const studentService = {
       };
     }>(`/student/attempt/${attemptId}/submit`, {
       answers: answers.map((a) => ({
-        question_id: a.questionId,
-        selected_option_id: a.selectedOptionId,
+        questionId: a.questionId,
+        selectedOptionId: a.selectedOptionId,
       })),
     });
     return response.data.data;

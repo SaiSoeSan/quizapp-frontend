@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
@@ -11,7 +11,9 @@ import LoadingSpinner from "@/components/ui/Loading";
 
 export default function ResultPage() {
   const params = useParams();
-  const attemptId = params.slug as string;
+  const searchParams = useSearchParams();
+  const slug = params.slug as string;
+  const attemptId = searchParams.get("attemptId");
 
   const [result, setResult] = useState<QuizResult | null>(null);
   const [showAnswers, setShowAnswers] = useState(true);

@@ -4,31 +4,25 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { useEffect, useState } from "react";
 import { QuickAction } from "@/types/dashboard";
 import { userService } from "@/services/userService";
+import { attemptService } from "@/services/attemptService";
 import StatsCard from "@/components/dashboard/StatsCard";
 import {
   QuestionSetsIcon,
-  QuizzesIcon,
   UsersIcon,
   AddUserIcon,
   PlusIcon,
+  AttemptsIcon,
 } from "@/components/icons/DashboardIcons";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import ListCard from "@/components/dashboard/ListCard";
 import { User } from "@/types/auth";
+import { Attempt } from "@/types/attempt";
 
 // Static data - replace with API calls later
 const stats = {
   questionSets: 24,
   questions: 482,
-  activeQuizzes: 12,
 };
-
-const recentQuestionSets = [
-  { id: 1, title: "JavaScript Basics", subtitle: 25 },
-  { id: 2, title: "React Fundamentals", subtitle: 30 },
-  { id: 3, title: "Node.js Quiz", subtitle: 20 },
-  { id: 4, title: "TypeScript Advanced", subtitle: 15 },
-];
 
 const quickActions: QuickAction[] = [
   {
@@ -47,19 +41,23 @@ const quickActions: QuickAction[] = [
 
 export default function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [totalAttempts, setTotalAttempts] = useState<number>(0);
   const [recentUsers, setRecentUsers] = useState<
+    { id: number; title: string; subtitle: string; badgeText: string }[]
+  >([]);
+  const [recentAttempts, setRecentAttempts] = useState<
     { id: number; title: string; subtitle: string; badgeText: string }[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await userService.getAllStudents();
-        if (response.success) {
-          setTotalUsers(response.total);
-          // Get the 4 most recent users for the Recent Users list
-          const recent = response.users.slice(0, 4).map((user: User) => ({
+        // Fetch users
+        const usersResponse = await userService.getAllStudents();
+        if (usersResponse.success) {
+          setTotalUsers(usersResponse.total);
+          const recent = usersResponse.users.slice(0, 4).map((user: User) => ({
             id: user.id,
             title: `${user.firstName} ${user.lastName}`,
             subtitle: user.email,
@@ -67,14 +65,29 @@ export default function AdminDashboard() {
           }));
           setRecentUsers(recent);
         }
+
+        // Fetch attempts
+        const attemptsResponse = await attemptService.getStats();
+        if (attemptsResponse.success) {
+          setTotalAttempts(attemptsResponse.totalAttempts);
+          const recentAttemptsList = attemptsResponse.recentAttempts
+            .slice(0, 4)
+            .map((attempt: Attempt) => ({
+              id: attempt.id,
+              title: attempt.questionSet?.title || "Unknown Quiz",
+              subtitle: `${attempt.user?.firstName} ${attempt.user?.lastName}`,
+              badgeText: `${attempt.score}%`,
+            }));
+          setRecentAttempts(recentAttemptsList);
+        }
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUsers();
+    fetchData();
   }, []);
 
   return (
@@ -103,11 +116,11 @@ export default function AdminDashboard() {
             color="green"
           />
           <StatsCard
-            title="Active Quizzes"
-            value={stats.activeQuizzes}
-            icon={<QuizzesIcon />}
-            href=""
-            linkText="View all quizzes →"
+            title="Total Attempts"
+            value={isLoading ? "..." : totalAttempts}
+            icon={<AttemptsIcon />}
+            href="/admin/attempts"
+            linkText="View all attempts →"
             color="orange"
           />
         </div>
@@ -127,10 +140,12 @@ export default function AdminDashboard() {
           />
 
           <ListCard
-            title="Recent Question Sets"
-            items={recentQuestionSets}
-            viewAllHref="/admin/question-sets"
-            viewAllText="View all question sets"
+            title="Recent Attempts"
+            items={recentAttempts}
+            viewAllHref="/admin/attempts"
+            viewAllText="View all attempts"
+            showAvatar={true}
+            showBadge={true}
           />
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function Login() {
       authService.setUser(response.user);
 
       setUser({
-        name: response.user.first_name + " " + response.user.last_name,
+        name: response.user.firstName + " " + response.user.lastName,
         role: response.user.role,
       });
 

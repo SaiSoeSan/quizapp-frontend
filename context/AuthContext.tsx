@@ -8,7 +8,9 @@ import { UserData } from "@/types/auth";
 interface AuthContextType {
   user: UserData | null;
   token: string | null;
+  isLoading: boolean;
   setUser: (user: UserData | null) => void;
+  setToken: (token: string | null) => void;
   logout: () => void;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,12 +23,12 @@ export function AuthContextProvider({
   const router = useRouter();
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true); // eslint-disable-line
     setUser(authService.getUser());
     setToken(authService.getToken());
+    setIsLoading(false);
   }, []);
 
   const logout = () => {
@@ -36,12 +38,10 @@ export function AuthContextProvider({
     router.push("/login");
   };
 
-  if (!mounted) {
-    return null;
-  }
-
   return (
-    <AuthContext.Provider value={{ user, token, setUser, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, isLoading, setUser, setToken, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

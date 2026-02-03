@@ -7,12 +7,12 @@ import { studentService } from "@/services/studentService";
 
 interface Question {
   id: number;
-  question_text: string;
-  question_type: string;
+  questionText: string;
+  questionType: string;
   options: Array<{
     id: number;
-    option_text: string;
-    is_correct: boolean;
+    optionText: string;
+    isCorrect: boolean;
   }>;
 }
 
@@ -39,9 +39,12 @@ export default function PracticePage() {
         setQuestions(data.questions);
         setQuestionSetTitle(data.questionSet.title);
         setAttemptId(data.attempt.id);
-        
+
         // Load existing answers if any
-        if (data.existingAnswers && Object.keys(data.existingAnswers).length > 0) {
+        if (
+          data.existingAnswers &&
+          Object.keys(data.existingAnswers).length > 0
+        ) {
           setAnswers(data.existingAnswers);
         }
       } catch (err) {
@@ -109,7 +112,9 @@ export default function PracticePage() {
       await studentService.submitQuiz(attemptId, answersArray);
 
       // Redirect to result page
-      router.push(`/student/question-sets/${slug}/result?attemptId=${attemptId}`);
+      router.push(
+        `/student/question-sets/${slug}/result?attemptId=${attemptId}`,
+      );
     } catch (err) {
       console.error("Failed to submit quiz", err);
       setError("Failed to submit quiz. Please try again.");
@@ -168,13 +173,13 @@ export default function PracticePage() {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
-                {currentQuestion.question_type === "multiple_choice"
+                {currentQuestion.questionType === "multiple_choice"
                   ? "Multiple Choice"
                   : "True / False"}
               </span>
             </div>
             <h2 className="text-xl font-medium text-gray-800">
-              {currentQuestion.question_text}
+              {currentQuestion.questionText}
             </h2>
           </div>
 
@@ -201,7 +206,7 @@ export default function PracticePage() {
                 >
                   {String.fromCharCode(65 + index)}
                 </span>
-                <span className="text-gray-700">{option.option_text}</span>
+                <span className="text-gray-700">{option.optionText}</span>
               </button>
             ))}
           </div>

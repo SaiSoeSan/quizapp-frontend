@@ -47,12 +47,12 @@ export const studentService = {
     questionSet: { id: number; title: string };
     questions: Array<{
       id: number;
-      question_text: string;
-      question_type: string;
+      questionText: string;
+      questionType: string;
       options: Array<{
         id: number;
-        option_text: string;
-        is_correct: boolean;
+        optionText: string;
+        isCorrect: boolean;
       }>;
     }>;
     existingAnswers: Record<number, number>;
@@ -63,12 +63,12 @@ export const studentService = {
         questionSet: { id: number; title: string };
         questions: Array<{
           id: number;
-          question_text: string;
-          question_type: string;
+          questionText: string;
+          questionType: string;
           options: Array<{
             id: number;
-            option_text: string;
-            is_correct: boolean;
+            optionText: string;
+            isCorrect: boolean;
           }>;
         }>;
         existingAnswers: Record<number, number>;

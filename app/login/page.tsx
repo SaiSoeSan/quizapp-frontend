@@ -13,7 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { setUser } = useAuthContext();
+  const { setUser, setToken } = useAuthContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +25,7 @@ export default function Login() {
       authService.setToken(response.token);
       authService.setUser(response.user);
 
+      setToken(response.token);
       setUser({
         name: response.user.firstName + " " + response.user.lastName,
         role: response.user.role,

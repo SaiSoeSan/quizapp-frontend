@@ -15,7 +15,7 @@ const setCookies = (name: string, value: string, days: number = 7) => {
   if (!isBrowser) return;
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${name}=${encodeURIComponent(
-    value
+    value,
   )}; expires=${expires}; path=/;`;
 };
 
@@ -61,7 +61,7 @@ export const authService = {
 
   setUser: (user: User) => {
     const userData = {
-      name: user.first_name + " " + user.last_name,
+      name: user.firstName + " " + user.lastName,
       role: user.role,
     };
     setCookies("user", JSON.stringify(userData));

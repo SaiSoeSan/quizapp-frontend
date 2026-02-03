@@ -22,13 +22,13 @@ const QuestionModal = ({
   const isEditMode = !!question;
 
   const questionInitialData: QuestionRequestFormData = {
-    question_text: "",
-    question_type: "multiple_choice",
+    questionText: "",
+    questionType: "multiple_choice",
     options: [
-      { option_text: "", is_correct: true },
-      { option_text: "", is_correct: false },
-      { option_text: "", is_correct: false },
-      { option_text: "", is_correct: false },
+      { optionText: "", isCorrect: true },
+      { optionText: "", isCorrect: false },
+      { optionText: "", isCorrect: false },
+      { optionText: "", isCorrect: false },
     ],
   };
 
@@ -44,26 +44,26 @@ const QuestionModal = ({
       if (question) {
         // Edit mode - populate with existing data
         setFormData({
-          question_text: question.question_text,
-          question_type: question.question_type,
+          questionText: question.questionText,
+          questionType: question.questionType,
           options:
-            question.question_type === "true_false"
+            question.questionType === "true_false"
               ? [
                   {
                     id: question.options?.[0]?.id,
-                    option_text: "True",
-                    is_correct: question.options?.[0]?.is_correct || false,
+                    optionText: "True",
+                    isCorrect: question.options?.[0]?.isCorrect || false,
                   },
                   {
                     id: question.options?.[1]?.id,
-                    option_text: "False",
-                    is_correct: question.options?.[1]?.is_correct || false,
+                    optionText: "False",
+                    isCorrect: question.options?.[1]?.isCorrect || false,
                   },
                 ]
               : question.options?.map((opt) => ({
                   id: opt.id,
-                  option_text: opt.option_text,
-                  is_correct: opt.is_correct,
+                  optionText: opt.optionText,
+                  isCorrect: opt.isCorrect,
                 })) || [],
         });
       } else {
@@ -78,18 +78,18 @@ const QuestionModal = ({
   const handleTypeChange = (type: "multiple_choice" | "true_false") => {
     setFormData((prev) => ({
       ...prev,
-      question_type: type,
+      questionType: type,
       options:
         type === "true_false"
           ? [
-              { option_text: "True", is_correct: true },
-              { option_text: "False", is_correct: false },
+              { optionText: "True", isCorrect: true },
+              { optionText: "False", isCorrect: false },
             ]
           : [
-              { option_text: "", is_correct: true },
-              { option_text: "", is_correct: false },
-              { option_text: "", is_correct: false },
-              { option_text: "", is_correct: false },
+              { optionText: "", isCorrect: true },
+              { optionText: "", isCorrect: false },
+              { optionText: "", isCorrect: false },
+              { optionText: "", isCorrect: false },
             ],
     }));
   };
@@ -99,7 +99,7 @@ const QuestionModal = ({
     setFormData((prev) => ({
       ...prev,
       options: prev.options.map((opt, i) =>
-        i === index ? { ...opt, option_text: value } : opt,
+        i === index ? { ...opt, optionText: value } : opt,
       ),
     }));
   };
@@ -110,7 +110,7 @@ const QuestionModal = ({
       ...prev,
       options: prev.options.map((opt, i) => ({
         ...opt,
-        is_correct: i === index,
+        isCorrect: i === index,
       })),
     }));
   };
@@ -120,7 +120,7 @@ const QuestionModal = ({
     if (formData.options.length < 6) {
       setFormData((prev) => ({
         ...prev,
-        options: [...prev.options, { option_text: "", is_correct: false }],
+        options: [...prev.options, { optionText: "", isCorrect: false }],
       }));
     }
   };
@@ -130,8 +130,8 @@ const QuestionModal = ({
     if (formData.options.length > 2) {
       const newOptions = formData.options.filter((_, i) => i !== index);
       // If we removed the correct answer, make the first one correct
-      if (formData.options[index].is_correct) {
-        newOptions[0].is_correct = true;
+      if (formData.options[index].isCorrect) {
+        newOptions[0].isCorrect = true;
       }
       setFormData((prev) => ({ ...prev, options: newOptions }));
     }
@@ -143,14 +143,14 @@ const QuestionModal = ({
     setError("");
 
     // Validation
-    if (!formData.question_text.trim()) {
+    if (!formData.questionText.trim()) {
       setError("Question text is required");
       return;
     }
 
-    if (formData.question_type === "multiple_choice") {
+    if (formData.questionType === "multiple_choice") {
       const emptyOptions = formData.options.filter(
-        (opt) => !opt.option_text.trim(),
+        (opt) => !opt.optionText.trim(),
       );
       if (emptyOptions.length > 0) {
         setError("All options must have text");
@@ -158,7 +158,7 @@ const QuestionModal = ({
       }
     }
 
-    const hasCorrect = formData.options.some((opt) => opt.is_correct);
+    const hasCorrect = formData.options.some((opt) => opt.isCorrect);
     if (!hasCorrect) {
       setError("Please select a correct answer");
       return;
@@ -226,19 +226,19 @@ const QuestionModal = ({
               {/* Question Text */}
               <div>
                 <label
-                  htmlFor="question_text"
+                  htmlFor="questionText"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Question Text <span className="text-red-500">*</span>
                 </label>
                 <textarea
-                  name="question_text"
-                  id="question_text"
-                  value={formData.question_text}
+                  name="questionText"
+                  id="questionText"
+                  value={formData.questionText}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      question_text: e.target.value,
+                      questionText: e.target.value,
                     }))
                   }
                   rows={3}
@@ -256,8 +256,8 @@ const QuestionModal = ({
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
-                      name="question_type"
-                      checked={formData.question_type === "multiple_choice"}
+                      name="questionType"
+                      checked={formData.questionType === "multiple_choice"}
                       onChange={() => handleTypeChange("multiple_choice")}
                       className="w-4 h-4 text-red-600 focus:ring-red-500"
                     />
@@ -268,8 +268,8 @@ const QuestionModal = ({
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
-                      name="question_type"
-                      checked={formData.question_type === "true_false"}
+                      name="questionType"
+                      checked={formData.questionType === "true_false"}
                       onChange={() => handleTypeChange("true_false")}
                       className="w-4 h-4 text-red-600 focus:ring-red-500"
                     />
@@ -293,8 +293,8 @@ const QuestionModal = ({
                       {/* Correct Answer Radio */}
                       <input
                         type="radio"
-                        name="correct_answer"
-                        checked={option.is_correct}
+                        name="correctAnswer"
+                        checked={option.isCorrect}
                         onChange={() => handleCorrectChange(index)}
                         className="w-4 h-4 text-green-600 focus:ring-green-500"
                       />
@@ -305,25 +305,25 @@ const QuestionModal = ({
                       </span>
 
                       {/* Option Input */}
-                      {formData.question_type === "true_false" ? (
+                      {formData.questionType === "true_false" ? (
                         <span
                           className={`flex-1 px-4 py-2 bg-gray-50 border rounded-lg text-gray-700 ${
-                            option.is_correct
+                            option.isCorrect
                               ? "border-green-300 bg-green-50"
                               : "border-gray-300"
                           }`}
                         >
-                          {option.option_text}
+                          {option.optionText}
                         </span>
                       ) : (
                         <input
                           type="text"
-                          value={option.option_text}
+                          value={option.optionText}
                           onChange={(e) =>
                             handleOptionChange(index, e.target.value)
                           }
                           className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent text-gray-500 ${
-                            option.is_correct
+                            option.isCorrect
                               ? "border-green-300 bg-green-50"
                               : "border-gray-300"
                           }`}
@@ -334,7 +334,7 @@ const QuestionModal = ({
                       )}
 
                       {/* Remove Button (only for multiple choice with more than 2 options) */}
-                      {formData.question_type === "multiple_choice" &&
+                      {formData.questionType === "multiple_choice" &&
                         formData.options.length > 2 && (
                           <button
                             type="button"
@@ -361,7 +361,7 @@ const QuestionModal = ({
                 </div>
 
                 {/* Add Option Button */}
-                {formData.question_type === "multiple_choice" &&
+                {formData.questionType === "multiple_choice" &&
                   formData.options.length < 6 && (
                     <button
                       type="button"

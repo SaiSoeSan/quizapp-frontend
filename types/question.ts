@@ -1,8 +1,8 @@
 export interface Question {
   id: number;
-  question_text: string;
-  question_type: "multiple_choice" | "true_false";
-  question_set_id: number;
+  questionText: string;
+  questionType: "multiple_choice" | "true_false";
+  questionSetId: number;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null | undefined;
@@ -11,22 +11,22 @@ export interface Question {
 }
 
 export interface QuestionRequestFormData {
-  question_text: string;
-  question_type: "multiple_choice" | "true_false";
+  questionText: string;
+  questionType: "multiple_choice" | "true_false";
   options: OptionRequest[];
 }
 
 export interface OptionRequest {
   id?: number;
-  option_text: string;
-  is_correct: boolean;
+  optionText: string;
+  isCorrect: boolean;
 }
 
 export interface QuestionOption {
   id: number;
-  question_id: number;
-  option_text: string;
-  is_correct: boolean;
+  questionId: number;
+  optionText: string;
+  isCorrect: boolean;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null | undefined;

@@ -9,7 +9,7 @@ const OptionItem = ({ option, index }: OptionItemProps) => {
   return (
     <div
       className={`flex items-center gap-3 p-3 rounded-lg border ${
-        option.is_correct
+        option.isCorrect
           ? "border-green-300 bg-green-50"
           : "border-gray-200 bg-gray-50"
       }`}
@@ -19,12 +19,12 @@ const OptionItem = ({ option, index }: OptionItemProps) => {
       </span>
       <span
         className={`flex-1 text-sm ${
-          option.is_correct ? "text-green-700 font-medium" : "text-gray-700"
+          option.isCorrect ? "text-green-700 font-medium" : "text-gray-700"
         }`}
       >
-        {option.option_text}
+        {option.optionText}
       </span>
-      {option.is_correct && (
+      {option.isCorrect && (
         <svg
           className="w-5 h-5 text-green-600"
           fill="currentColor"

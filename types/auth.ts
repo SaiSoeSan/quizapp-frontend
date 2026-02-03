@@ -2,8 +2,8 @@ export interface User {
   id: number;
   email: string;
   phone: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   role: "student" | "admin";
   createdAt: string;
   updatedAt: string;

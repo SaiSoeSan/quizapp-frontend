@@ -1,15 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { useEffect, useState } from "react";
-import { UserData } from "@/types/auth";
 import { QuickAction } from "@/types/dashboard";
-import { authService } from "@/services/authService";
+import { userService } from "@/services/userService";
 import StatsCard from "@/components/dashboard/StatsCard";
 import {
   QuestionSetsIcon,
-  QuestionsIcon,
   QuizzesIcon,
   UsersIcon,
   AddUserIcon,
@@ -17,41 +14,14 @@ import {
 } from "@/components/icons/DashboardIcons";
 import QuickActionCard from "@/components/dashboard/QuickActionCard";
 import ListCard from "@/components/dashboard/ListCard";
+import { User } from "@/types/auth";
 
 // Static data - replace with API calls later
 const stats = {
-  users: 156,
   questionSets: 24,
   questions: 482,
   activeQuizzes: 12,
 };
-
-const recentUsers = [
-  {
-    id: 1,
-    title: "John Doe",
-    subtitle: "john@example.com",
-    badgeText: "student",
-  },
-  {
-    id: 2,
-    title: "Jane Smith",
-    subtitle: "jane@example.com",
-    badgeText: "student",
-  },
-  {
-    id: 3,
-    title: "Mike Wilson",
-    subtitle: "mike@example.com",
-    badgeText: "teacher",
-  },
-  {
-    id: 4,
-    title: "Sarah Brown",
-    subtitle: "sarah@example.com",
-    badgeText: "student",
-  },
-];
 
 const recentQuestionSets = [
   { id: 1, title: "JavaScript Basics", subtitle: 25 },
@@ -63,7 +33,7 @@ const recentQuestionSets = [
 const quickActions: QuickAction[] = [
   {
     href: "/admin/users/create",
-    label: "Add New User",
+    label: "Add New Student",
     icon: <AddUserIcon />,
     color: "blue",
   },
@@ -76,6 +46,37 @@ const quickActions: QuickAction[] = [
 ];
 
 export default function AdminDashboard() {
+  const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [recentUsers, setRecentUsers] = useState<
+    { id: number; title: string; subtitle: string; badgeText: string }[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await userService.getAllStudents();
+        if (response.success) {
+          setTotalUsers(response.total);
+          // Get the 4 most recent users for the Recent Users list
+          const recent = response.users.slice(0, 4).map((user: User) => ({
+            id: user.id,
+            title: `${user.firstName} ${user.lastName}`,
+            subtitle: user.email,
+            badgeText: user.role,
+          }));
+          setRecentUsers(recent);
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -86,11 +87,11 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatsCard
-            title="Total Users"
-            value={stats.users}
+            title="Total Students"
+            value={isLoading ? "..." : totalUsers}
             icon={<UsersIcon />}
             href="/admin/users"
-            linkText="View all users →"
+            linkText="View all students →"
             color="blue"
           />
           <StatsCard

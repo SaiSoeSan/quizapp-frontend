@@ -15,6 +15,8 @@ export interface Attempt {
   userId: number;
   questionSetId: number;
   score: number;
+  totalQuestions: number;
+  percentage: number;
   isSubmitted: boolean;
   submittedAt: string;
   createdAt: string;
@@ -25,10 +27,9 @@ export interface Attempt {
 
 export interface QuestionSetStats {
   questionSetId: number;
-  totalAttempts: string;
-  averageScore: string;
-  highestScore: number;
-  lowestScore: number;
+  totalAttempts: number;
+  totalQuestions: number;
+  averageScore: number;
   questionSet: AttemptQuestionSet;
 }
 

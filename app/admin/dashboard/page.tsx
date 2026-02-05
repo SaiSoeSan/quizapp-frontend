@@ -136,7 +136,7 @@ export default function AdminDashboard() {
             viewAllHref="/admin/users"
             viewAllText="View all users"
             showAvatar={true}
-            showBadge={true}
+            showBadge={false}
           />
 
           <ListCard
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
             viewAllHref="/admin/attempts"
             viewAllText="View all attempts"
             showAvatar={true}
-            showBadge={true}
+            showBadge={false}
           />
         </div>
       </div>

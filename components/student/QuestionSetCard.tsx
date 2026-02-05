@@ -11,6 +11,7 @@ const QuestionSetCard = ({
   index: number;
   isLast: boolean;
 }) => {
+  console.log("Rendering QuestionSetCard for:", questionSet);
   const { progress } = questionSet;
   const isLocked = progress.status === "locked";
   const isCompleted = progress.status === "completed";
@@ -165,12 +166,12 @@ const QuestionSetCard = ({
                     href={`/student/question-sets/${questionSet.id}`}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
                   >
-                    Review
+                    Review Again
                   </Link>
                 </div>
               ) : (
                 <Link
-                  href={`/student/question-sets/${progress.attemptId}`}
+                  href={`/student/question-sets/${questionSet.id}`}
                   className={`px-4 py-2 rounded-lg text-sm font-medium ${
                     isInProgress
                       ? "bg-orange-500 text-white hover:bg-orange-600"

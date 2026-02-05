@@ -127,7 +127,8 @@ export default function AdminUsersPage() {
             </div>
             <div className="text-sm text-gray-500 flex items-center">
               Total:{" "}
-              <span className="font-semibold ml-1">{filteredUsers.length}</span>{" "}
+              <span className="font-semibold ml-1">{filteredUsers.length}</span>
+              {"\u00A0"}
               students
             </div>
           </div>
